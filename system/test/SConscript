@@ -1,0 +1,73 @@
+
+
+Import('*')
+
+
+_env = env.Clone()
+
+_env.Append(CPPFLAGS = '-D_DBUS_TCP_ ')
+
+_env.Append(CPPPATH = ['#system/include',
+                        '#libckits/include',
+                        '#include/webrtc/src/modules/audio_coding/main/interface/',
+                        '#include/webrtc/src/modules/audio_processing/include/',
+                        '#include/webrtc/src/common_audio/resampler/include',
+                        '#include/webrtc/src/',
+                        '#include/webrtc/src/modules/interface/',
+                        '#libnet/include',
+                        '#include',
+                        '#system/include',
+                        '#libckits/include',
+                        '#libnet/include',
+                        '#include',
+                        '#libacm',
+                        '#libvideo',
+                        '#libmedia',
+                        '#libapm',
+                        '#libaux/include',
+                        '#libmedia',
+                        '#dbus',
+                        '#libfoundation/include',
+                        '#',
+                        '#libhiaudio3531/component/hifb/include',
+                        '#libhiaudio3531/include',
+                        '#libhiaudio3531/',
+                        '#libhiaudio3531/extdrv/tw2865',
+                        '#libhiaudio3531/extdrv/tw2960',
+                        '#libhiaudio3531/extdrv/tlv320aic31'])
+#'#tinyalsa/include',
+
+
+'''_env.Append(LIBPATH = ['#out/system/libcutils',
+                            '#out/system/liblog',
+                            '#out/system/libutils',
+                            '#out/dbus',
+                            '#out/libacm',
+                            '#out/libapm',
+                            '#out/libaux',
+                            '#out/libckits',
+                            '#out/libconf',
+                            '#out/libmedia',
+                            '#out/libnet',
+                            '#out/libvideo',
+                            '#out/tinyalsa'
+                                        ])'''
+_env.Append(LIBPATH = ['#release'])
+
+# 'tinyalsa',
+_env['LIBS'] = ['c','dl','pthread','utils','cutils', 
+                'log',
+                'ckits']  
+
+objs = _env.Glob('*.c') + _env.Glob('*.cpp')
+
+
+target = _env.Program('utils_test_base', objs)
+_o = target
+
+target = _env.Command('utils_test', 'utils_test_base', "$STRIP $SOURCE -o $TARGET")
+_o += target
+
+
+all =  target
+Return('all')

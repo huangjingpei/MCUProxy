@@ -1,0 +1,33 @@
+﻿Import('*')
+
+_myName='libavs_aux'
+_env = env.Clone()
+#_env.Append(CPPFLAGS = '-DTEST_LIST_SORT -DCONCRET_LIMIT=1024 ')
+_env.Append(CPPPATH = ['include', '#/include', '#/system/include', '#/libckits/include'])
+_env.Append(LIBPATH = '../out/libckits')
+_env['LIBS'] = ['c']
+
+#target = _env.SharedLibrary('libavs_aux.so-dev', Glob('*.c')+Glob('*.cpp'), _LIBFLAGS=' -Wl,-Bsymbolic')
+#objs = target
+#
+#target = _env.Command('libavs_aux.so', 'libavs_aux.so-dev', "$STRIP $SOURCE -o $TARGET")
+#objs += target
+#
+#_env.copyinfo = [
+#      ('/lib', "libruntime.so-dev", 0755),
+#      ('/include', 'include/*.h', 0644)
+#    ]
+#target = _env.Tarball('runtime-dev.tar.gz', objs)
+#
+#all = objs + target
+#all = _env.SharedLibrary('libavs_aux.so', Glob('*.c')+Glob('*.cpp'), _LIBFLAGS=' -Wl,-Bsymbolic')
+objs = Glob('*.c')+Glob('*.cpp')
+target = _env.SharedLibrary(_myName + '.so-dev', objs, _LIBFLAGS=' -Wl,-Bsymbolic')
+objs.append(target)
+
+
+
+target = _env.Command(_myName + '.so', _myName + '.so-dev', "$STRIP -g $SOURCE -o $TARGET")
+objs.append(target)
+
+Return('target')

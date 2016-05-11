@@ -1,0 +1,103 @@
+﻿Import('*')
+
+_env = env.Clone()
+_env.Append(CPPFLAGS = '-DHAVE_PTHREADS ')
+if _env.has_key('TARGET_CPU_SMP') and _env['TARGET_CPU_SMP'] == 'true':
+    _env.Append(CPPFLAGS = '-DANDROID_SMP=1 ')
+else:
+    _env.Append(CPPFLAGS = '-DANDROID_SMP=0 ')
+
+_env.Append(CPPPATH = '#/system/include')
+_env.Append(LIBPATH = 'lib')
+_env['LIBS'] = ['c', 'pthread']
+
+totalSources = '''
+	array.c \
+	hashmap.c \
+	atomic.c \
+	native_handle.c \
+	buffer.c \
+	socket_inaddr_any_server.c \
+	socket_local_client.c \
+	socket_local_server.c \
+	socket_loopback_client.c \
+	socket_loopback_server.c \
+	socket_network_client.c \
+	sockets.c \
+	config_utils.c \
+	cpu_info.c \
+	load_file.c \
+	list.c \
+	open_memstream.c \
+	strdup16to8.c \
+	strdup8to16.c \
+	record_stream.c \
+	process_name.c \
+	properties.c \
+	qsort_r_compat.c \
+	threads.c \
+	sched_policy.c \
+	iosched_policy.c \
+	str_parms.c \
+	uio.c \
+'''
+skipSources = ''' 
+	array.c \
+	hashmap.c \
+	atomic.c.arm \
+	native_handle.c \
+	buffer.c \
+	socket_inaddr_any_server.c \
+	socket_local_client.c \
+	socket_local_server.c \
+	socket_loopback_client.c \
+	socket_loopback_server.c \
+	socket_network_client.c \
+	sockets.c \
+	config_utils.c \
+	cpu_info.c \
+	load_file.c \
+	list.c \
+	open_memstream.c \
+	strdup16to8.c \
+	strdup8to16.c \
+	record_stream.c \
+	process_name.c \
+	properties.c \
+	qsort_r_compat.c \
+	threads.c \
+	sched_policy.c \
+	iosched_policy.c \
+	str_parms.c \
+        abort_socket.c \
+        fs.c \
+        selector.c \
+        tztime.c \
+        multiuser.c \
+        zygote.c
+        android_reboot.c \
+        ashmem-dev.c \
+        debugger.c \
+        klog.c \
+        mq.c \
+        partition_utils.c \
+        qtaguid.c \
+        uevent.c \
+        misc_rw.c 
+
+'''
+
+#all = _env.SharedLibrary('libcutils.so', totalSources.split(), _LIBFLAGS=' -Wl,-Bsymbolic')
+
+_myName='libcutils'
+objs = totalSources.split()
+target = _env.SharedLibrary(_myName + '.so-dev', objs, _LIBFLAGS=' -Wl,-Bsymbolic')
+objs.append(target)
+
+
+
+target = _env.Command(_myName + '.so', _myName + '.so-dev', "$STRIP -g $SOURCE -o $TARGET")
+objs.append(target)
+
+
+Return('target')

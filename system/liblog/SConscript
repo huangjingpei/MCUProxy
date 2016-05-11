@@ -1,0 +1,25 @@
+﻿Import('*')
+
+_env = env.Clone()
+_env.Append(CPPFLAGS = '-DFAKE_LOG_DEVICE=1 -DHAVE_SYS_UIO_H ')
+_env.Append(CPPPATH = '#/system/include')
+_env.Append(LIBPATH = 'lib')
+_env['LIBS'] = ['c', 'pthread']
+
+totalSources = 'logprint.c event_tag_map.c fake_log_device.c logd_write.c'
+skipSources = 'logd_write.c' 
+
+#all = _env.SharedLibrary('liblog.so', totalSources.split(), _LIBFLAGS=' -Wl,-Bsymbolic')
+
+_myName='liblog'
+objs = totalSources.split()
+target = _env.SharedLibrary(_myName + '.so-dev', objs, _LIBFLAGS=' -Wl,-Bsymbolic')
+objs.append(target)
+
+
+
+target = _env.Command(_myName + '.so', _myName + '.so-dev', "$STRIP -g $SOURCE -o $TARGET")
+objs.append(target)
+
+
+Return('target')

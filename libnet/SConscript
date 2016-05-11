@@ -1,0 +1,20 @@
+﻿Import('*')
+
+_env = env.Clone()
+#_env.Append(CPPFLAGS = "-DOS_PATH_SEPARATOR=\"'/'\" ")
+_env.Append(CPPPATH = ['#/include', '#/system/include', '#/libvideo/', '#/libnet/include', '#libaux/include', '#/libckits/include'])
+_env.Append(LIBPATH = 'lib')
+_env['LIBS'] = ['c', 'rt', 'dl']
+
+totalSources = '''
+    Transport.cpp \
+    RTPTransport.cpp \
+    absTimerList.cpp \
+    Poller.cpp \
+    Sender.cpp \
+    Holder.cpp
+'''
+
+all = _env.SharedLibrary('libavs_net.so', totalSources.split(), _LIBFLAGS=' -Wl,-Bsymbolic')
+
+Return('all')
